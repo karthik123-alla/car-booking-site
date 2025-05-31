@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Easy Cars - Home</title>
+  
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Custom Styles -->
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .home-bg {
+      background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+    }
+    .animate-cars {
+      animation: moveCars 30s linear infinite;
+    }
+    @keyframes moveCars {
+      from {
+        background-position: 0 bottom;
+      }
+      to {
+        background-position: 1000px bottom;
+      }
+    }
+  </style>
+</head>
+
+<body class="home-bg text-gray-800">
+
+  <!-- Navigation Bar -->
+  <nav class="bg-white shadow py-4">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+      <div class="text-xl font-bold text-blue-700">Easy Cars</div>
+      <div class="flex items-center space-x-6">
+        <a href="index.html" class="text-gray-700 hover:text-blue-500">Home</a>
+        <a href="cars.html" class="text-gray-700 hover:text-blue-500">Cars</a>
+        <a href="book.html" class="text-gray-700 hover:text-blue-500">Book Now</a>
+        <a href="about.html" class="text-gray-700 hover:text-blue-500">About</a>
+        <a href="contact.html" class="text-gray-700 hover:text-blue-500">Contact</a>
+        <div id="user-avatar"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="relative bg-blue-900 text-white py-32 overflow-hidden">
+    <div class="absolute inset-0 z-0 bg-repeat-x bg-bottom animate-cars"
+         style="background-image: url('https://i.imgur.com/FWZwN3N.gif'); background-size: cover;"></div>
+    <div class="relative z-10 text-center">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">Welcome to Easy Cars</h2>
+      <p class="text-lg md:text-xl mb-6">Making car rentals smooth, fast, and friendly.</p>
+      <a href="book.html" class="bg-white text-blue-600 font-semibold px-6 py-3 rounded shadow hover:bg-gray-100">Start Booking</a>
+    </div>
+  </header>
+
+  <!-- How It Works -->
+  <section class="py-16 bg-white">
+    <div class="max-w-5xl mx-auto px-4 text-center">
+      <h3 class="text-3xl font-bold mb-10">How It Works</h3>
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <div class="text-blue-600 text-4xl mb-2">1️⃣</div>
+          <p class="font-semibold">Choose Your Car</p>
+        </div>
+        <div>
+          <div class="text-blue-600 text-4xl mb-2">2️⃣</div>
+          <p class="font-semibold">Pick Your Date</p>
+        </div>
+        <div>
+          <div class="text-blue-600 text-4xl mb-2">3️⃣</div>
+          <p class="font-semibold">Confirm Booking</p>
+        </div>
+        <div>
+          <div class="text-blue-600 text-4xl mb-2">4️⃣</div>
+          <p class="font-semibold">Enjoy the Ride</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <h3 class="text-3xl font-bold text-center mb-10">What Our Customers Say</h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded shadow">
+          <p class="italic">“Easy Cars made our family trip stress-free. Loved the service!”</p>
+          <p class="font-semibold mt-4">- Priya R.</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow">
+          <p class="italic">“Clean cars, quick support, and easy process. Highly recommend!”</p>
+          <p class="font-semibold mt-4">- Arjun M.</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow">
+          <p class="italic">“Affordable rates and a huge selection. Will book again soon.”</p>
+          <p class="font-semibold mt-4">- Sneha T.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Walkthrough -->
+  <section class="py-16 text-center bg-white">
+    <h3 class="text-3xl font-bold mb-6">Watch How Easy It Is</h3>
+    <div class="max-w-4xl mx-auto">
+      <iframe class="w-full h-64 md:h-96 rounded shadow-lg"
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              title="Easy Cars Walkthrough Video"
+              allowfullscreen>
+      </iframe>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="bg-blue-600 py-12 text-center text-white">
+    <h3 class="text-2xl md:text-3xl font-bold mb-4">Ready to ride with Easy Cars?</h3>
+    <p class="mb-6">Booking your car is just a click away. Let us make your journey memorable.</p>
+    <a href="book.html" class="bg-white text-blue-600 font-semibold px-6 py-3 rounded shadow hover:bg-gray-200">Book Your Car Now</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <p>© 2025 Easy Cars. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- User Avatar Script -->
+
+<!-- User Avatar Script -->
+<script>
+  const user = {
+    isAuthenticated: true, // change to false to simulate guest
+    username: "john_doe",
+    profile: {
+      image: "" // insert actual image URL if available
+    }
+  };
+
+  const avatarDiv = document.getElementById('user-avatar');
+  let avatarHTML = "";
+  const loginUrl = "registration.html"; // Update this to your actual login page if needed
+
+  if (user.isAuthenticated && user.profile.image) {
+    avatarHTML = `
+      <a href="${loginUrl}">
+        <img src="${user.profile.image}" alt="User Photo" class="w-10 h-10 rounded-full border-2 border-white shadow hover:scale-105 transition">
+      </a>`;
+  } else if (user.isAuthenticated) {
+    avatarHTML = `
+      <a href="${loginUrl}">
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}" alt="Generated Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow">
+      </a>`;
+  } else {
+    avatarHTML = `
+      <a href="${loginUrl}">
+        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Guest" class="w-10 h-10 rounded-full border-2 border-white opacity-80">
+      </a>`;
+  }
+
+  avatarDiv.innerHTML = avatarHTML;
+</script>
+
+
+</body>
+</html>

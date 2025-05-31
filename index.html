@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Easy Cars - Drive with Ease</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS Bundle (place before </body>) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes carsMove {
+            0% {
+                background-position: 0 bottom;
+            }
+            100% {
+                background-position: 1000px bottom;
+            }
+        }
+
+        .animate-cars {
+            animation: carsMove 60s linear infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.03);
+            }
+        }
+
+        .animate-pulse-subtle {
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .hero-shadow {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <nav class="bg-white shadow-lg py-4 rounded-b-xl">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <div class="text-3xl font-extrabold text-blue-700">Easy Cars</div>
+            <div class="flex items-center space-x-8">
+                <a href="index.html" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1 hover:text-blue-800 transition-colors duration-200">Home</a>
+                <a href="cars.html" class="text-gray-700 hover:text-blue-500 font-medium transition-colors duration-200">Cars</a>
+                <a href="book.html" class="text-gray-700 hover:text-blue-500 font-medium transition-colors duration-200">Book Now</a>
+                <a href="about.html" class="text-gray-700 hover:text-blue-500 font-medium transition-colors duration-200">About</a>
+                <a href="contact.html" class="text-gray-700 hover:text-blue-500 font-medium transition-colors duration-200">Contact</a>
+                <div id="user-avatar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative bg-gradient-to-r from-blue-800 to-blue-900 text-white py-48 overflow-hidden fade-in shadow-2xl">
+        <div
+            class="absolute inset-0 z-0 bg-repeat-x bg-bottom animate-cars"
+            style="background-image: url('https://i.imgur.com/FWZwN3N.gif'); background-size: cover;"
+        ></div>
+        <div class="absolute inset-0 bg-blue-900 opacity-30 z-0"></div>
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+            <h1 class="text-6xl md:text-7xl font-bold mb-8 drop-shadow-lg">The Freedom to Explore</h1>
+            <p class="text-xl md:text-2xl mb-12 opacity-80">Rent the perfect car for your adventure.</p>
+            <a href="book.html" class="inline-block bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold text-xl py-5 px-16 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 animate-pulse-subtle">
+                Book Your Ride
+            </a>
+        </div>
+    </header>
+<!-- Featured Cars Section -->
+<section class="py-16 bg-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="text-4xl font-bold text-center text-blue-800 mb-12">Featured Cars</h2>
+
+    <!-- Carousel -->
+    <div id="featuredCarsCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+
+        <!-- Car 1 -->
+        <div class="carousel-item active">
+          <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-6">
+            <img src="https://placehold.co/600x375/FFD700/000000?text=Luxury+Sedan" class="d-block w-full rounded-xl shadow" alt="Luxury Sedan">
+            <div class="text-left">
+              <h3 class="text-2xl font-bold text-blue-700 mb-2">Luxury Sedan</h3>
+              <ul class="text-gray-700 space-y-2">
+                <li><strong>Mileage:</strong> 18 km/l</li>
+                <li><strong>Seater:</strong> 5</li>
+                <li><strong>Fuel Type:</strong> Diesel</li>
+                <li><strong>Fuel Capacity:</strong> 50 L</li>
+                <li><strong>Transmission:</strong> Automatic</li>
+                <li><strong>Features:</strong> AC, Airbags, Bluetooth, Navigation, Rear Camera</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Car 2 -->
+        <div class="carousel-item">
+          <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-6">
+            <img src="https://placehold.co/600x375/ADD8E6/000000?text=Family+SUV" class="d-block w-full rounded-xl shadow" alt="Family SUV">
+            <div class="text-left">
+              <h3 class="text-2xl font-bold text-blue-700 mb-2">Family SUV</h3>
+              <ul class="text-gray-700 space-y-2">
+                <li><strong>Mileage:</strong> 15 km/l</li>
+                <li><strong>Seater:</strong> 7</li>
+                <li><strong>Fuel Type:</strong> Petrol</li>
+                <li><strong>Fuel Capacity:</strong> 60 L</li>
+                <li><strong>Transmission:</strong> Manual</li>
+                <li><strong>Features:</strong> Rear AC Vents, Parking Sensors, Touch Screen Display</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Car 3 -->
+        <div class="carousel-item">
+          <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-6">
+            <img src="https://placehold.co/600x375/90EE90/000000?text=Compact+Car" class="d-block w-full rounded-xl shadow" alt="Compact Car">
+            <div class="text-left">
+              <h3 class="text-2xl font-bold text-blue-700 mb-2">Compact Car</h3>
+              <ul class="text-gray-700 space-y-2">
+                <li><strong>Mileage:</strong> 22 km/l</li>
+                <li><strong>Seater:</strong> 4</li>
+                <li><strong>Fuel Type:</strong> EV</li>
+                <li><strong>Battery Capacity:</strong> 40 kWh</li>
+                <li><strong>Transmission:</strong> Automatic</li>
+                <li><strong>Features:</strong> Fast Charging, Android Auto, Keyless Entry</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon bg-dark rounded-full p-3" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#featuredCarsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon bg-dark rounded-full p-3" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+    <section class="py-16 bg-gradient-to-br from-blue-50 to-white">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-blue-800 mb-12">Why Rent With Easy Cars?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="p-6 rounded-lg shadow-md bg-white hover:shadow-xl transition duration-300">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-blue-200 flex items-center justify-center text-blue-700 text-2xl mb-4">
+                        🚗
+                    </div>
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Wide Selection</h3>
+                    <p class="text-gray-600">A variety of cars to match your needs.</p>
+                </div>
+                <div class="p-6 rounded-lg shadow-md bg-white hover:shadow-xl transition duration-300">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-green-200 flex items-center justify-center text-green-700 text-2xl mb-4">
+                        🔑
+                    </div>
+                    <h3 class="text-xl font-semibold text-green-700 mb-2">Easy Booking</h3>
+                    <p class="text-gray-600">Quick and hassle-free reservation process.</p>
+                </div>
+                <div class="p-6 rounded-lg shadow-md bg-white hover:shadow-xl transition duration-300">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-purple-200 flex items-center justify-center text-purple-700 text-2xl mb-4">
+                        Support
+                    </div>
+                    <h3 class="text-xl font-semibold text-purple-700 mb-2">24/7 Support</h3>
+                    <p class="text-gray-600">We're here to help you anytime.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mt-20 px-4 py-16 bg-white rounded-3xl shadow-2xl max-w-7xl mx-auto">
+        <h3 class="text-3xl font-bold text-blue-800 mb-12 text-center">
+            Explore Qatar
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <div class="rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 hover:shadow-2xl transition duration-300 cursor-pointer bg-white border border-gray-100">
+                <img
+                    src="https://placehold.co/800x480/A7C7E7/333333?text=Doha+Corniche"
+                    alt="Doha Corniche"
+                    class="w-full h-48 object-cover hover:brightness-105 transition duration-300"
+                />
+                <div class="bg-blue-100 text-blue-800 font-semibold text-center py-4 text-lg">Doha Corniche</div>
+            </div>
+            <div class="rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 hover:shadow-2xl transition duration-300 cursor-pointer bg-white border border-gray-100">
+                <img
+                    src="https://placehold.co/800x480/E6B0AA/333333?text=Souq+Waqif"
+                    alt="Souq Waqif"
+                    class="w-full h-48 object-cover hover:brightness-105 transition duration-300"
+                />
+                <div class="bg-red-100 text-red-800 font-semibold text-center py-4 text-lg">Souq Waqif</div>
+            </div>
+            <div class="rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 hover:shadow-2xl transition duration-300 cursor-pointer bg-white border border-gray-100">
+                <img
+                    src="https://placehold.co/800x480/B0E0E6/333333?text=Museum+of+Islamic+Art"
+                    alt="Museum of Islamic Art"
+                    class="w-full h-48 object-cover hover:brightness-105 transition duration-300"
+                />
+                <div class="bg-teal-100 text-teal-800 font-semibold text-center py-4 text-lg">Museum of Islamic Art</div>
+            </div>
+            <div class="rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 hover:shadow-2xl transition duration-300 cursor-pointer bg-white border border-gray-100">
+                <img
+                    src="https://placehold.co/800x480/DDA0DD/333333?text=Katara+Cultural+Village"
+                    alt="Katara Cultural Village"
+                    class="w-full h-48 object-cover hover:brightness-105 transition duration-300"
+                />
+                <div class="bg-purple-100 text-purple-800 font-semibold text-center py-4 text-lg">Katara Cultural Village</div>
+            </div>
+            <div class="rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 hover:shadow-2xl transition duration-300 cursor-pointer bg-white border border-gray-100">
+                <img
+                    src="https://placehold.co/800x480/FFC0CB/333333?text=The+Pearl-Qatar"
+                    alt="The Pearl-Qatar"
+                    class="w-full h-48 object-cover hover:brightness-105 transition duration-300"
+                />
+                <div class="bg-pink-100 text-pink-800 font-semibold text-center py-4 text-lg">The Pearl-Qatar</div>
+            </div>
+            <div class="rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 hover:shadow-2xl transition duration-300 cursor-pointer bg-white border border-gray-100">
+                <img
+                    src="https://placehold.co/800x480/87CEEB/333333?text=Inland+Sea"
+                    alt="Inland Sea"
+                    class="w-full h-48 object-cover hover:brightness-105 transition duration-300"
+                />
+                <div class="bg-sky-100 text-sky-800 font-semibold text-center py-4 text-lg">Inland Sea</div>
+            </div>
+        </div>
+    </section>

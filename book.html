@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental Booking - EasyCars</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Applying the requested linear gradient background */
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Styles for step transitions */
+        .step-content {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none; /* Disable interactions when hidden */
+            position: absolute; /* Allow steps to overlap for transition */
+            width: 100%;
+            top: 0;
+            left: 0;
+            padding: 1.5rem; /* Consistent padding */
+        }
+        .step-content.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all; /* Enable interactions when active */
+            position: relative; /* Take up space when active */
+        }
+
+        /* Custom modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* shadow-xl */
+            max-width: 90%;
+            width: 500px;
+            text-align: center;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3b82f6; /* blue-500 */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow py-4">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <div class="text-2xl font-extrabold text-blue-700">EasyCars</div>
+            <div class="flex items-center space-x-6">
+                <a href="index.html" class="text-gray-700 hover:text-blue-500 font-medium">Home</a>
+                <a href="cars.html" class="text-gray-700 hover:text-blue-500 font-medium">Cars</a>
+                <a href="book.html" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Book Now</a>
+                <a href="about.html" class="text-gray-700 hover:text-blue-500 font-medium">About</a>
+                <a href="contact.html" class="text-gray-700 hover:text-blue-500 font-medium">Contact</a>
+                <div id="user-avatar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-xl mt-10 mb-10 relative overflow-hidden">
+        <h1 class="text-3xl font-bold mb-8 text-blue-800 text-center">Car Rental Booking for Foreign Clients</h1>
+
+        <div class="flex justify-between items-center mb-8 px-4 text-center">
+            <div id="step-indicator-1" class="flex flex-col items-center flex-1">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-blue-600 text-white font-bold text-lg shadow-md transition-all duration-300">1</div>
+                <span class="text-sm font-medium mt-2 text-blue-700">Identification</span>
+            </div>
+            <div class="flex-1 border-t-2 border-gray-300 mx-2 transition-all duration-300"></div>
+            <div id="step-indicator-2" class="flex flex-col items-center flex-1">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-300 text-gray-600 font-bold text-lg shadow-md transition-all duration-300">2</div>
+                <span class="text-sm font-medium mt-2 text-gray-500">Contact</span>
+            </div>
+            <div class="flex-1 border-t-2 border-gray-300 mx-2 transition-all duration-300"></div>
+            <div id="step-indicator-3" class="flex flex-col items-center flex-1">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-300 text-gray-600 font-bold text-lg shadow-md transition-all duration-300">3</div>
+                <span class="text-sm font-medium mt-2 text-gray-500">Financial</span>
+            </div>
+            <div class="flex-1 border-t-2 border-gray-300 mx-2 transition-all duration-300"></div>
+            <div id="step-indicator-4" class="flex flex-col items-center flex-1">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-300 text-gray-600 font-bold text-lg shadow-md transition-all duration-300">4</div>
+                <span class="text-sm font-medium mt-2 text-gray-500">Rental Details</span>
+            </div>
+            <div class="flex-1 border-t-2 border-gray-300 mx-2 transition-all duration-300"></div>
+            <div id="step-indicator-5" class="flex flex-col items-center flex-1">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-300 text-gray-600 font-bold text-lg shadow-md transition-all duration-300">5</div>
+                <span class="text-sm font-medium mt-2 text-gray-500">Confirmation</span>
+            </div>
+        </div>
+
+        <form id="booking-form" class="space-y-6 min-h-[450px]">
+            <section id="step-1" class="step-content active">
+                <h2 class="text-2xl font-semibold mb-6 text-blue-700">Step 1: Identification & Driving Eligibility</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="passport_id" class="block text-gray-700 text-sm font-bold mb-2">Passport or National ID <span class="text-red-500">*</span></label>
+                        <input type="file" id="passport_id" name="passport_id" accept="image/*,.pdf" class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" required>
+                        <p class="text-gray-500 text-xs italic mt-1">Upload a clear scan or photo of your valid passport or national ID.</p>
+                    </div>
+                    <div>
+                        <label for="drivers_license" class="block text-gray-700 text-sm font-bold mb-2">Driver's License <span class="text-red-500">*</span></label>
+                        <input type="file" id="drivers_license" name="drivers_license" accept="image/*,.pdf" class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" required>
+                        <p class="text-gray-500 text-xs italic mt-1">Upload a clear scan or photo of your valid driver's license from your home country.</p>
+                    </div>
+                    <div>
+                        <label for="idp_upload" class="block text-gray-700 text-sm font-bold mb-2">International Driving Permit (IDP) <span class="text-gray-500">(Optional, if required)</span></label>
+                        <input type="file" id="idp_upload" name="idp_upload" accept="image/*,.pdf" class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        <p class="text-gray-500 text-xs italic mt-1">Upload your IDP if it's required for driving in this region.</p>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-end">
+                    <button type="button" onclick="nextStep()" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md">Next</button>
+                </div>
+            </section>
+
+            <section id="step-2" class="step-content">
+                <h2 class="text-2xl font-semibold mb-6 text-blue-700">Step 2: Your Contact & Residency Details</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="home_address" class="block text-gray-700 text-sm font-bold mb-2">Permanent Address (Home Country) <span class="text-red-500">*</span></label>
+                        <textarea id="home_address" name="home_address" rows="3" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Street, City, Postal Code, Country" required></textarea>
+                    </div>
+                    <div>
+                        <label for="local_address" class="block text-gray-700 text-sm font-bold mb-2">Local Address (During Stay) <span class="text-red-500">*</span></label>
+                        <textarea id="local_address" name="local_address" rows="3" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Hotel Name, Street, City" required></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="local_phone" class="block text-gray-700 text-sm font-bold mb-2">Local Phone Number</label>
+                            <input type="tel" id="local_phone" name="local_phone" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="+XX XXX XXXXXXX">
+                        </div>
+                        <div>
+                            <label for="emergency_contact_name" class="block text-gray-700 text-sm font-bold mb-2">Emergency Contact Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="emergency_contact_name" name="emergency_contact_name" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Full Name" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="emergency_contact_phone" class="block text-gray-700 text-sm font-bold mb-2">Emergency Contact Phone <span class="text-red-500">*</span></label>
+                        <input type="tel" id="emergency_contact_phone" name="emergency_contact_phone" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="+XX XXX XXXXXXX" required>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-between">
+                    <button type="button" onclick="prevStep()" class="px-8 py-3 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition-colors duration-300 shadow-md">Previous</button>
+                    <button type="button" onclick="nextStep()" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md">Next</button>
+                </div>
+            </section>
+
+            <section id="step-3" class="step-content">
+                <h2 class="text-2xl font-semibold mb-6 text-blue-700">Step 3: Financial & Insurance Details</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="credit_card_number" class="block text-gray-700 text-sm font-bold mb-2">Credit Card Number <span class="text-red-500">*</span></label>
+                        <input type="text" id="credit_card_number" name="credit_card_number" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="XXXX XXXX XXXX XXXX" pattern="[0-9]{13,19}" title="Credit card number must be between 13 and 19 digits" required>
+                        <p class="text-gray-500 text-xs italic mt-1">For payment and security deposit. Must be in your name.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="card_expiry" class="block text-gray-700 text-sm font-bold mb-2">Expiry Date <span class="text-red-500">*</span></label>
+                            <input type="month" id="card_expiry" name="card_expiry" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label for="card_cvv" class="block text-gray-700 text-sm font-bold mb-2">CVV <span class="text-red-500">*</span></label>
+                            <input type="text" id="card_cvv" name="card_cvv" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="XXX" pattern="[0-9]{3,4}" title="CVV must be 3 or 4 digits" required>
+                        </div>
+                        <div>
+                            <label for="card_holder_name" class="block text-gray-700 text-sm font-bold mb-2">Card Holder Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="card_holder_name" name="card_holder_name" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Optional Insurance Coverage</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                                <input type="checkbox" name="insurance" value="cdw" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
+                                <span class="ml-3 text-gray-700 text-base font-medium">Collision Damage Waiver (CDW) - <span class="text-blue-600">$25/day</span></span>
+                                <p class="text-gray-500 text-xs ml-auto">Reduces your financial liability for damage to the rental car.</p>
+                            </label>
+                            <label class="flex items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                                <input type="checkbox" name="insurance" value="tp" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
+                                <span class="ml-3 text-gray-700 text-base font-medium">Theft Protection (TP) - <span class="text-blue-600">$15/day</span></span>
+                                <p class="text-gray-500 text-xs ml-auto">Covers loss or damage to the rental vehicle due to theft.</p>
+                            </label>
+                            <label class="flex items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                                <input type="checkbox" name="tpl" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
+                                <span class="ml-3 text-gray-700 text-base font-medium">Third-Party Liability (TPL) - <span class="text-blue-600">$10/day</span></span>
+                                <p class="text-gray-500 text-xs ml-auto">Covers damages or injuries to third parties.</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-between">
+                    <button type="button" onclick="prevStep()" class="px-8 py-3 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition-colors duration-300 shadow-md">Previous</button>
+                    <button type="button" onclick="nextStep()" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md">Next</button>
+                </div>
+            </section>
+
+            <section id="step-4" class="step-content">
+                <h2 class="text-2xl font-semibold mb-6 text-blue-700">Step 4: Your Rental Preferences & Usage</h2>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="pickup_datetime" class="block text-gray-700 text-sm font-bold mb-2">Pickup Date & Time <span class="text-red-500">*</span></label>
+                            <input type="datetime-local" id="pickup_datetime" name="pickup_datetime" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label for="return_datetime" class="block text-gray-700 text-sm font-bold mb-2">Return Date & Time <span class="text-red-500">*</span></label>
+                            <input type="datetime-local" id="return_datetime" name="return_datetime" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="car_type_preference" class="block text-gray-700 text-sm font-bold mb-2">Preferred Car Type <span class="text-red-500">*</span></label>
+                        <select id="car_type_preference" name="car_type_preference" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                            <option value="">Select a car type</option>
+                            <option value="economy">Economy (e.g., Toyota Yaris)</option>
+                            <option value="compact">Compact (e.g., Honda Civic)</option>
+                            <option value="midsize">Mid-size Sedan (e.g., Toyota Camry)</option>
+                            <option value="suv">SUV (e.g., Nissan Rogue)</option>
+                            <option value="fullsize_suv">Full-size SUV (e.g., Chevrolet Tahoe)</option>
+                            <option value="van">Passenger Van (e.g., Chrysler Pacifica)</option>
+                            <option value="luxury">Luxury (e.g., Mercedes-Benz C-Class)</option>
+                            <option value="truck">Pickup Truck (e.g., Ford F-150)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="intended_use" class="block text-gray-700 text-sm font-bold mb-2">Intended Use & Destinations</label>
+                        <textarea id="intended_use" name="intended_use" rows="3" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., Tourism in city, road trip to mountains, business travel"></textarea>
+                        <p class="text-gray-500 text-xs italic mt-1">Helps us recommend suitable insurance and vehicle types.</p>
+                    </div>
+                    <div>
+                        <label for="additional_drivers_count" class="block text-gray-700 text-sm font-bold mb-2">Number of Additional Drivers</label>
+                        <input type="number" id="additional_drivers_count" name="additional_drivers_count" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="0" min="0">
+                        <p class="text-gray-500 text-xs italic mt-1">Each additional driver must also provide their license and ID at pickup.</p>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-between">
+                    <button type="button" onclick="prevStep()" class="px-8 py-3 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition-colors duration-300 shadow-md">Previous</button>
+                    <button type="button" onclick="nextStep()" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md">Next</button>
+                </div>
+            </section>
+
+            <section id="step-5" class="step-content">
+                <h2 class="text-2xl font-semibold mb-6 text-blue-700">Step 5: Review & Confirm Your Booking</h2>
+                <div id="booking-summary" class="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Summary of Your Details:</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+                        <div>
+                            <p class="font-semibold">Identification:</p>
+                            <p>Passport/ID: <span id="summary-passport" class="font-medium text-green-600">Uploaded</span></p>
+                            <p>Driver's License: <span id="summary-license" class="font-medium text-green-600">Uploaded</span></p>
+                            <p>IDP: <span id="summary-idp" class="font-medium text-gray-500">Not Provided</span></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Contact & Residency:</p>
+                            <p>Home Address: <span id="summary-home-address" class="font-medium"></span></p>
+                            <p>Local Address: <span id="summary-local-address" class="font-medium"></span></p>
+                            <p>Local Phone: <span id="summary-local-phone" class="font-medium"></span></p>
+                            <p>Emergency Contact: <span id="summary-emergency-name" class="font-medium"></span> (<span id="summary-emergency-phone" class="font-medium"></span>)</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Financial & Insurance:</p>
+                            <p>Credit Card: <span id="summary-credit-card" class="font-medium"></span></p>
+                            <p>Insurance: <span id="summary-insurance" class="font-medium"></span></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Rental Details:</p>
+                            <p>Pickup: <span id="summary-pickup" class="font-medium"></span></p>
+                            <p>Return: <span id="summary-return" class="font-medium"></span></p>
+                            <p>Car Type: <span id="summary-car-type" class="font-medium"></span></p>
+                            <p>Intended Use: <span id="summary-intended-use" class="font-medium"></span></p>
+                            <p>Additional Drivers: <span id="summary-add-drivers" class="font-medium"></span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-between">
+                    <button type="button" onclick="prevStep()" class="px-8 py-3 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition-colors duration-300 shadow-md">Previous</button>
+                    <button type="submit" class="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-300 shadow-md">Confirm Booking</button>
+                </div>
+            </section>
+
+        </form>
+
+    </main>
+
+    <div id="custom-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="modal-title" class="text-2xl font-bold mb-4 text-blue-700"></h3>
+            <p id="modal-message" class="text-gray-700 mb-6"></p>
+            <button id="modal-close-btn" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Global Variables and DOM Elements ---
+        const steps = [...document.querySelectorAll('.step-content')];
+        const stepIndicators = [...document.querySelectorAll('[id^="step-indicator-"]')];
+        const progressBar = document.getElementById('progress-bar');
+        const bookingForm = document.getElementById('booking-form');
+
+        let currentStepIndex = 0;
+        let formData = {}; // Object to store all collected form data
+
+        // Get references to the modal elements
+        const customModal = document.getElementById('custom-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        // --- Modal Functions ---
+
+        /**
+         * Displays a custom modal with a title and message.
+         * @param {string} title - The title for the modal.
+         * @param {string} message - The message content for the modal.
+         * @param {boolean} showLoading - If true, displays a loading spinner.
+         */
+        const showCustomModal = (title, message, showLoading = false) => {
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = showLoading ? `<div class="loading-spinner"></div> ${message}` : message;
+            customModal.classList.remove('hidden');
+            modalCloseBtn.classList.toggle('hidden', showLoading); // Hide close button during loading
+        };
+
+        /**
+         * Hides the custom modal.
+         */
+        const hideCustomModal = () => {
+            customModal.classList.add('hidden');
+        };
+
+        // Event listener for closing the modal
+        modalCloseBtn.addEventListener('click', hideCustomModal);
+
+        // --- Step Navigation and Progress Functions ---
+
+        /**
+         * Updates the visual progress indicator and progress bar.
+         */
+        const updateProgressIndicator = () => {
+            stepIndicators.forEach((indicator, i) => {
+                const circle = indicator.querySelector('div');
+                const text = indicator.querySelector('span');
+
+                if (i === currentStepIndex) {
+                    circle.classList.remove('bg-gray-300', 'text-gray-600', 'bg-green-500');
+                    circle.classList.add('bg-blue-600', 'text-white', 'scale-110');
+                    text.classList.remove('text-gray-500', 'text-green-700');
+                    text.classList.add('text-blue-700');
+                } else if (i < currentStepIndex) {
+                    circle.classList.remove('bg-gray-300', 'text-gray-600', 'scale-110', 'bg-blue-600');
+                    circle.classList.add('bg-green-500', 'text-white'); // Completed steps
+                    text.classList.remove('text-gray-500', 'text-blue-700');
+                    text.classList.add('text-green-700');
+                } else {
+                    circle.classList.remove('bg-blue-600', 'text-white', 'scale-110', 'bg-green-500');
+                    circle.classList.add('bg-gray-300', 'text-gray-600');
+                    text.classList.remove('text-blue-700', 'text-green-700');
+                    text.classList.add('text-gray-500');
+                }
+            });
+
+            // Update progress bar width
+            // Check if progressBar exists before trying to access its style property
+            if (progressBar) {
+                const progress = ((currentStepIndex + 1) / steps.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            } else {
+                console.error("Progress bar element not found.");
+            }
+        };
+
+        /**
+         * Shows the specified step and hides others.
+         * @param {number} index - The index of the step to show.
+         */
+        const showStep = (index) => {
+            steps.forEach((step, i) => {
+                if (i === index) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+            currentStepIndex = index;
+            updateProgressIndicator();
+        };
+
+        /**
+         * Validates the current step's inputs before proceeding.
+         * @returns {boolean} True if validation passes, false otherwise.
+         */
+        const validateCurrentStep = () => {
+            const currentSection = steps[currentStepIndex];
+            const requiredInputs = currentSection.querySelectorAll('[required]');
+            let isValid = true;
+            let firstInvalidInput = null;
+
+            requiredInputs.forEach(input => {
+                if (input.type === 'file') {
+                    if (input.files.length === 0) {
+                        isValid = false;
+                        if (!firstInvalidInput) firstInvalidInput = input;
+                    }
+                } else if (!input.value.trim()) {
+                    isValid = false;
+                    if (!firstInvalidInput) firstInvalidInput = input;
+                }
+            });
+
+            if (!isValid) {
+                showCustomModal('Missing Information', 'Please fill in all required fields marked with <span class="text-red-500">*</span>.');
+                if (firstInvalidInput) {
+                    firstInvalidInput.focus();
+                }
+            }
+            return isValid;
+        };
+
+        /**
+         * Collects data from the current step and stores it in formData.
+         */
+        const collectStepData = () => {
+            const currentSection = steps[currentStepIndex];
+            const inputs = currentSection.querySelectorAll('input, textarea, select');
+
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    if (!formData[input.name]) {
+                        formData[input.name] = [];
+                    }
+                    if (input.checked) {
+                        formData[input.name].push(input.value);
+                    }
+                } else if (input.type === 'file') {
+                    // For file inputs, we'll store a boolean indicating if a file is selected
+                    formData[input.name] = input.files.length > 0;
+                } else {
+                    formData[input.name] = input.value.trim();
+                }
+            });
+        };
+
+        /**
+         * Moves to the next step if validation passes.
+         */
+        const nextStep = () => {
+            if (validateCurrentStep()) {
+                collectStepData(); // Collect data before moving
+                if (currentStepIndex < steps.length - 1) {
+                    showStep(currentStepIndex + 1);
+                    if (currentStepIndex === steps.length - 1) {
+                        populateConfirmationSummary(); // Populate summary when reaching the last step
+                    }
+                }
+            }
+        };
+
+        /**
+         * Moves to the previous step.
+         */
+        const prevStep = () => {
+            if (currentStepIndex > 0) {
+                showStep(currentStepIndex - 1);
+            }
+        };
+
+        /**
+         * Populates the confirmation summary on the final step.
+         */
+        const populateConfirmationSummary = () => {
+            // Identification
+            document.getElementById('summary-passport').textContent = formData.passport_id ? 'Uploaded' : 'Not Provided';
+            document.getElementById('summary-license').textContent = formData.drivers_license ? 'Uploaded' : 'Not Provided';
+            document.getElementById('summary-idp').textContent = formData.idp_upload ? 'Uploaded' : 'Not Provided';
+
+            // Contact & Residency
+            document.getElementById('summary-home-address').textContent = formData.home_address || 'N/A';
+            document.getElementById('summary-local-address').textContent = formData.local_address || 'N/A';
+            document.getElementById('summary-local-phone').textContent = formData.local_phone || 'N/A';
+            document.getElementById('summary-emergency-name').textContent = formData.emergency_contact_name || 'N/A';
+            document.getElementById('summary-emergency-phone').textContent = formData.emergency_contact_phone || 'N/A';
+
+            // Financial & Insurance
+            const lastFourDigits = formData.credit_card_number ? '************' + formData.credit_card_number.slice(-4) : 'N/A';
+            document.getElementById('summary-credit-card').textContent = lastFourDigits;
+            document.getElementById('summary-insurance').textContent = formData.insurance && formData.insurance.length > 0 ? formData.insurance.map(i => i.toUpperCase()).join(', ') : 'None Selected';
+
+            // Rental Details
+            document.getElementById('summary-pickup').textContent = formData.pickup_datetime ? new Date(formData.pickup_datetime).toLocaleString() : 'N/A';
+            document.getElementById('summary-return').textContent = formData.return_datetime ? new Date(formData.return_datetime).toLocaleString() : 'N/A';
+            document.getElementById('summary-car-type').textContent = formData.car_type_preference || 'N/A';
+            document.getElementById('summary-intended-use').textContent = formData.intended_use || 'N/A';
+            document.getElementById('summary-add-drivers').textContent = formData.additional_drivers_count || '0';
+        };
+
+        // --- Form Submission ---
+
+        bookingForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            collectStepData(); // Ensure all data is collected before final submission
+
+            showCustomModal('Processing Booking...', 'Please wait while we confirm your reservation.', true);
+
+            // Prepare data for LLM prompt
+            const prompt = `Generate a friendly and concise car rental booking confirmation message for a foreign client.
+            Here are the details:
+            - Client is a foreigner.
+            - Home Address: ${formData.home_address || 'Not provided'}
+            - Local Address: ${formData.local_address || 'Not provided'}
+            - Local Phone: ${formData.local_phone || 'Not provided'}
+            - Emergency Contact: ${formData.emergency_contact_name || 'Not provided'} (${formData.emergency_contact_phone || 'Not provided'})
+            - Credit Card: Ending in ${formData.credit_card_number ? formData.credit_card_number.slice(-4) : 'N/A'}
+            - Insurance Selected: ${formData.insurance && formData.insurance.length > 0 ? formData.insurance.map(i => i.toUpperCase()).join(', ') : 'None'}
+            - Pickup: ${formData.pickup_datetime ? new Date(formData.pickup_datetime).toLocaleString() : 'N/A'}
+            - Return: ${formData.return_datetime ? new Date(formData.return_datetime).toLocaleString() : 'N/A'}
+            - Preferred Car Type: ${formData.car_type_preference || 'Any'}
+            - Intended Use: ${formData.intended_use || 'Not specified'}
+            - Additional Drivers: ${formData.additional_drivers_count || '0'}
+
+            The message should thank them, confirm their booking, mention the key details, and remind them to bring original documents for verification at pickup. Emphasize a warm welcome. Keep it under 150 words.`;
+
+            try {
+                // LLM API call to generate booking confirmation
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will provide this at runtime
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const confirmationMessage = result.candidates[0].content.parts[0].text;
+                    showCustomModal('Booking Confirmed!', confirmationMessage);
+                } else {
+                    showCustomModal('Booking Confirmed!', 'Your booking has been received! We will send details to your email shortly. Please remember to bring your original documents for verification.');
+                    console.error('LLM response structure unexpected:', result);
+                }
+            } catch (error) {
+                console.error('Error generating confirmation:', error);
+                showCustomModal('Booking Confirmed!', 'Your booking has been received! We will send details to your email shortly. Please remember to bring your original documents for verification. (Error generating personalized message)');
+            }
+        });
+
+        // --- User Avatar Script (from previous code) ---
+        const user = {
+            isAuthenticated: true,
+            username: "foreign_client", // Changed username for this context
+            profile: { image: "" } // Example: "https://via.placeholder.com/40"
+        };
+        const avatarDiv = document.getElementById('user-avatar');
+        const loginUrl = "registration.html"; // Assuming a registration/login page
+
+        let avatarHTML = "";
+        if (user.isAuthenticated && user.profile.image) {
+            avatarHTML = `<a href="${loginUrl}"><img src="${user.profile.image}" alt="User Photo" class="w-10 h-10 rounded-full border-2 border-white shadow hover:scale-105 transition"></a>`;
+        } else if (user.isAuthenticated) {
+            avatarHTML = `<a href="${loginUrl}"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}" alt="Generated Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow"></a>`;
+        } else {
+            avatarHTML = `<a href="${loginUrl}"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Guest" class="w-10 h-10 rounded-full border-2 border-white opacity-80"></a>`;
+        }
+        avatarDiv.innerHTML = avatarHTML;
+
+        // --- Initial Setup ---
+        // Ensure the DOM is fully loaded before trying to manipulate elements
+        document.addEventListener('DOMContentLoaded', () => {
+            showStep(0); // Ensure the first step is visible on page load
+        });
+    </script>
+
+</body>
+</html>
